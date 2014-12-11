@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'time'
 
-class BufferedSlackOutputTest < Test::Unit::TestCase
+class SlackOutputTest < Test::Unit::TestCase
 
   def setup
     super
@@ -9,21 +9,19 @@ class BufferedSlackOutputTest < Test::Unit::TestCase
   end
 
   CONFIG = %[
-    type buffered_slack
-    api_key testtoken
+    type slack
+    web_hook_url hoge
     team    sowasowa
-    channel  %23test
+    channel test
     username testuser
     color    good
     icon_emoji :ghost:
-    timezone Asia/Tokyo
     compress gz
     buffer_path ./test/tmp
-    utc
   ]
 
   def create_driver(conf = CONFIG)
-    Fluent::Test::BufferedOutputTestDriver.new(Fluent::BufferedSlackOutput).configure(conf)
+    Fluent::Test::BufferedOutputTestDriver.new(Fluent::SlackOutput).configure(conf)
   end
 
   def test_format
@@ -32,7 +30,7 @@ class BufferedSlackOutputTest < Test::Unit::TestCase
     d.tag = 'test'
     stub(d.instance.slack).ping(
       nil,
-      channel:    '%23test',
+      channel:    'test',
       username:   'testuser',
       icon_emoji: ':ghost:',
       attachments: [{
@@ -41,7 +39,7 @@ class BufferedSlackOutputTest < Test::Unit::TestCase
         fields:   [
           {
             title: d.tag,
-            value: "[#{Time.at(time).in_time_zone('Tokyo')}] sowawa\n"
+            value: "[#{Time.at(time)}] sowawa\n"
           }]}])
     d.emit({message: 'sowawa'}, time)
     d.expect_format %[#{['test', time, {message: 'sowawa'}].to_msgpack}]
@@ -54,7 +52,7 @@ class BufferedSlackOutputTest < Test::Unit::TestCase
     d.tag  = 'test'
     stub(d.instance.slack).ping(
       nil,
-      channel:    '%23test',
+      channel:    'test',
       username:   'testuser',
       icon_emoji: ':ghost:',
       attachments: [{
@@ -63,8 +61,8 @@ class BufferedSlackOutputTest < Test::Unit::TestCase
         fields:   [
           {
             title: d.tag,
-            value: "[#{Time.at(time).in_time_zone('Tokyo')}] sowawa1\n" +
-                     "[#{Time.at(time).in_time_zone('Tokyo')}] sowawa2\n"
+            value: "[#{Time.at(time)}] sowawa1\n" +
+                     "[#{Time.at(time)}] sowawa2\n"
           }]}])
     d.emit({message: 'sowawa1'}, time)
     d.emit({message: 'sowawa2'}, time)

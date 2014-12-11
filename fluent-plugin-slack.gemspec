@@ -16,8 +16,6 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_dependency "fluentd", ">= 0.10.8"
-  gem.add_dependency "activesupport", "~>3.2.0"
-  gem.add_dependency "tzinfo", ">=0.3.38"
 
   gem.add_development_dependency "rake", ">= 10.1.1"
   gem.add_development_dependency "rr", ">= 1.0.0"
