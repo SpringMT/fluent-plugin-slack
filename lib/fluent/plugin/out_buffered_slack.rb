@@ -60,7 +60,7 @@ module Fluent
       web_fook_url = URI.parse @web_hook_url
       req = Net::HTTP::Post.new web_fook_url.request_uri
       req.set_form_data(data)
-      http = Net::HTTP.new endpoint.host, endpoint.port
+      http = Net::HTTP.new web_fook_url.host, web_fook_url.port
       http.use_ssl = true
       res = http.request(req)
       if res.code != "200"
