@@ -1,3 +1,5 @@
+require 'fluent/mixin/plaintextformatter'
+
 module Fluent
   class SlackOutput < Fluent::BufferedOutput
     Fluent::Plugin.register_output('buffered_slack', self)
@@ -9,6 +11,8 @@ module Fluent
     config_param :icon_emoji,   :string
 
     attr_reader :slack
+
+    include Fluent::Mixin::PlainTextFormatter
 
     def initialize
       super
@@ -34,7 +38,7 @@ module Fluent
       messages = {}
       chunk.msgpack_each do |tag, time, record|
         messages[tag] = '' if messages[tag].nil?
-        messages[tag] << "[#{Time.at(time).strftime("%H:%M:%S")}] #{record['message']}\n"
+        messages[tag] << "[#{Time.at(time).strftime("%H:%M:%S")}] #{record['hostname']} #{record['message']}\n"
       end
       begin
         payload = {

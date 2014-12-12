@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_dependency "fluentd", ">= 0.10.8"
+  gem.add_dependency "fluent-mixin-plaintextformatter"
 
   gem.add_development_dependency "rake", ">= 10.1.1"
   gem.add_development_dependency "rr", ">= 1.0.0"
