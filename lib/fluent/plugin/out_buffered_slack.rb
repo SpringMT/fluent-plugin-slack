@@ -6,9 +6,9 @@ module Fluent
     config_param :web_hook_url, :string
     config_param :team,         :string
     config_param :channel,      :string
-    config_param :username,     :string
-    config_param :color,        :string
-    config_param :icon_emoji,   :string
+    config_param :username,     :string, default: 'fluentd'
+    config_param :color,        :string, default: 'good'
+    config_param :icon_emoji,   :string, default: ':question:'
 
     attr_reader :slack
 
@@ -27,9 +27,9 @@ module Fluent
     def configure(conf)
       super
       @channel      = "##{conf['channel']}"
-      @username     = conf['username']   || 'fluentd'
-      @color        = conf['color']      || 'good'
-      @icon_emoji   = conf['icon_emoji'] || ':question:'
+      @username     = conf['username']
+      @color        = conf['color']
+      @icon_emoji   = conf['icon_emoji']
       @team         = conf['team']
       @web_hook_url = conf['web_hook_url']
     end
@@ -68,7 +68,7 @@ module Fluent
       http.use_ssl = true
       res = http.request(req)
       if res.code != "200"
-        raise BufferedSlackOutputError, "Slack.com - #{res.code} - #{res.body}"
+        raise "Slack.com - #{res.code} - #{res.body}"
       end
     end
   end
